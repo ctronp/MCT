@@ -25,4 +25,24 @@ TEST(test2, descripcion del test 2) {
   ASSERT(c != 3);
 }
 
+TEST(a, a){ASSERT(true)}
+
+TEST(a, a){ASSERT(true)}
+
+TEST(a, a){ASSERT(true)}
+
+TEST(a, a){ASSERT(true)}
+
+TEST(a, a){ASSERT(false)}
+
+TEST(a, a){ASSERT(false)}
+
+TEST(a, a){ASSERT(false)}
+
+TEST(a, a){ASSERT(false)}
+
+TEST(a, a){ASSERT(false)}
+
+TEST(a, a){ASSERT(true)}
+
 END_TESTING
