@@ -155,17 +155,23 @@ typedef struct {
     goto TEST_INIT_LABEL;                                                      \
   }
 
-#define PRINT_FAIL
+#define PRINT_FAIL                                                             \
+  red_terminal();                                                              \
+  printf("test %u failed.\n", test_c);
 
 #define START_TESTING(pre_function)                                            \
   int main(int ARGC, char **ARGV) {                                            \
     const void (*pre_fun)() = pre_function;                                    \
-    unsigned test_c = 0, pos_c = 0, fail_c = 0, skip_test;                     \
+    unsigned test_c = 0, fail_c = 0, skip_test;                                \
     char *test_name, *test_desc;                                               \
     bool do_test;                                                              \
     Failure fail_data = (Failure){.type = TEST_PASSED};                        \
     default_terminal();                                                        \
   TEST_INIT_LABEL:;                                                            \
+    if (fail_data.type != TEST_PASSED) {                                       \
+      PRINT_FAIL                                                               \
+    }                                                                          \
+                                                                               \
     skip_test = test_c;                                                        \
     if (fail_data.type == TEST_PASSED)
 
@@ -188,7 +194,7 @@ typedef struct {
   } else if (fail_c != 0) {                                                    \
     red_terminal();                                                            \
     printf("%.3lf%% of the results were correct.\n",                           \
-           (100.0 * pos_c) / test_c);                                          \
+           (100.0 * (test_c - fail_c)) / test_c);                              \
   } else {                                                                     \
     green_terminal();                                                          \
     printf("100%% of the results were correct.\n");                            \

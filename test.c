@@ -17,4 +17,12 @@ TEST(test1, test1) {
   int c = a + b;
   ASSERT(c == 3);
 }
+
+TEST(test2, descripcion del test 2) {
+  int a = 1;
+  int b = 2;
+  int c = a + b;
+  ASSERT(c != 3);
+}
+
 END_TESTING
