@@ -1,0 +1,12 @@
+# Ignore Everything
+/*
+
+!.gitignore
+
+#Except
+!.clang-format
+!CMakeLists.txt
+!LICENSE
+!MCT.h
+!README.md
+!test.c
