@@ -60,9 +60,11 @@ typedef struct {
 
 #define ASSERT(x)                                                              \
   if (!(x)) {                                                                  \
-    fail_data = {.type = UNKNOWN, .line = __LINE__};                           \
+    fail_data = (Failure){.type = UNKNOWN, .line = __LINE__};                  \
     break;                                                                     \
-  }
+  }                                                                            \
+  do {                                                                         \
+  } while (0)
 
 #define ASSERT_EQ_INT(x, y)                                                    \
   if ((x) != (y)) {                                                            \
@@ -146,10 +148,9 @@ typedef struct {
 
 #define START_TESTING(pre_function)                                            \
   int main(int ARGC, char **ARGV) {                                            \
-    const void (*fun_ptr)() = pre_function;                                    \
+    const void (*pre_fun)() = pre_function;                                    \
     unsigned test_c = 0, pos_c = 0, fail_c = 0;                                \
     char *test_name, *test_desc;                                               \
-    bool test_success;                                                         \
     Failure fail_data;                                                         \
     default_terminal();                                                        \
     do {
@@ -159,11 +160,13 @@ typedef struct {
   }                                                                            \
   while (false)                                                                \
     ;                                                                          \
+                                                                               \
   if (test_c != 0) {                                                           \
-    if (test_success) {                                                        \
+    if (fail_data.type = TEST_PASSED) {                                        \
       green_terminal();                                                        \
       printf("test %u pass.\n", test_c);                                       \
     } else {                                                                   \
+      fail_c++;                                                                \
       red_terminal();                                                          \
       printf("test %u failed.\n", test_c);                                     \
     }                                                                          \
@@ -179,11 +182,12 @@ typedef struct {
     return 1;                                                                  \
                                                                                \
   } else if (fail_c != 0) {                                                    \
-    red_termminal();                                                           \
-    printf("%d\% of the results were correct.\n", pos_c / test_c)              \
+    red_terminal();                                                            \
+    printf("%.3lf%% of the results were correct.\n",                           \
+           (100.0 * pos_c) / test_c);                                          \
   } else {                                                                     \
     green_terminal();                                                          \
-    printf("100\% of the results were correct.\n")                             \
+    printf("100%% of the results were correct.\n");                            \
   }                                                                            \
                                                                                \
   /* Return Value */                                                           \
@@ -196,13 +200,12 @@ typedef struct {
 #define TEST(name, description)                                                \
   END_TEST;                                                                    \
   default_terminal();                                                          \
+  if (pre_fun)                                                                 \
+    pre_fun();                                                                 \
                                                                                \
   test_name = #name;                                                           \
   test_desc = #description;                                                    \
                                                                                \
-  test_num++;                                                                  \
-  if (pre_execution) {                                                         \
-    pre_execution();                                                           \
-  }                                                                            \
-  do {                                                                         \
-  \
+  test_c++;                                                                    \
+  fail_data.type = TEST_PASSED;                                                \
+  do {
