@@ -61,44 +61,48 @@ typedef struct {
 #define ASSERT(x)                                                              \
   if (!(x)) {                                                                  \
     fail_data = (Failure){.type = UNKNOWN, .line = __LINE__};                  \
-    break;                                                                     \
-  }                                                                            \
-  do {                                                                         \
-  } while (0)
+    fail_c++;                                                                  \
+    goto TEST_INIT_LABEL;                                                      \
+  }
 
 #define ASSERT_EQ_INT(x, y)                                                    \
   if ((x) != (y)) {                                                            \
     fail_data = {                                                              \
         .type = SIGNED, .data1.ll = (x), .data2.ll = (y), .line = __LINE__};   \
-    break;                                                                     \
+    fail_c++;                                                                  \
+    goto TEST_INIT_LABEL;                                                      \
   }
 
 #define ASSERT_LT_INT(x, y)                                                    \
   if ((x) >= (y)) {                                                            \
     fail_data = {                                                              \
         .type = SIGNED, .data1.ll = (x), .data2.ll = (y), .line = __LINE__};   \
-    break;                                                                     \
+    fail_c++;                                                                  \
+    goto TEST_INIT_LABEL;                                                      \
   }
 
 #define ASSERT_LE_INT(x, y)                                                    \
   if ((x) > (y)) {                                                             \
     fail_data = {                                                              \
         .type = SIGNED, .data1.ll = (x), .data2.ll = (y), .line = __LINE__};   \
-    break;                                                                     \
+    fail_c++;                                                                  \
+    goto TEST_INIT_LABEL;                                                      \
   }
 
 #define ASSERT_GT_INT(x, y)                                                    \
   if ((x) <= (y)) {                                                            \
     fail_data = {                                                              \
         .type = SIGNED, .data1.ll = (x), .data2.ll = (y), .line = __LINE__};   \
-    break;                                                                     \
+    fail_c++;                                                                  \
+    goto TEST_INIT_LABEL;                                                      \
   }
 
 #define ASSERT_GE_INT(x, y)                                                    \
   if ((x) < (y)) {                                                             \
     fail_data = {                                                              \
         .type = SIGNED, .data1.ll = (x), .data2.ll = (y), .line = __LINE__};   \
-    break;                                                                     \
+    fail_c++;                                                                  \
+    goto TEST_INIT_LABEL;                                                      \
   }
 
 #define ASSERT_EQ_UNS(x, y)                                                    \
@@ -107,7 +111,8 @@ typedef struct {
                  .data1.llu = (x),                                             \
                  .data2.llu = (y),                                             \
                  .line = __LINE__};                                            \
-    break;                                                                     \
+    fail_c++;                                                                  \
+    goto TEST_INIT_LABEL;                                                      \
   }
 
 #define ASSERT_LT_UNS(x, y)                                                    \
@@ -116,7 +121,8 @@ typedef struct {
                  .data1.llu = (x),                                             \
                  .data2.llu = (y),                                             \
                  .line = __LINE__};                                            \
-    break;                                                                     \
+    fail_c++;                                                                  \
+    goto TEST_INIT_LABEL;                                                      \
   }
 
 #define ASSERT_LE_UNS(x, y)                                                    \
@@ -125,7 +131,8 @@ typedef struct {
                  .data1.llu = (x),                                             \
                  .data2.llu = (y),                                             \
                  .line = __LINE__};                                            \
-    break;                                                                     \
+    fail_c++;                                                                  \
+    goto TEST_INIT_LABEL;                                                      \
   }
 
 #define ASSERT_GT_UNS(x, y)                                                    \
@@ -134,7 +141,8 @@ typedef struct {
                  .data1.llu = (x),                                             \
                  .data2.llu = (y),                                             \
                  .line = __LINE__};                                            \
-    break;                                                                     \
+    fail_c++;                                                                  \
+    goto TEST_INIT_LABEL;                                                      \
   }
 
 #define ASSERT_GE_UNS(x, y)                                                    \
@@ -143,33 +151,29 @@ typedef struct {
                  .data1.llu = (x),                                             \
                  .data2.llu = (y),                                             \
                  .line = __LINE__};                                            \
-    break;                                                                     \
+    fail_c++;                                                                  \
+    goto TEST_INIT_LABEL;                                                      \
   }
+
+#define PRINT_FAIL
 
 #define START_TESTING(pre_function)                                            \
   int main(int ARGC, char **ARGV) {                                            \
     const void (*pre_fun)() = pre_function;                                    \
-    unsigned test_c = 0, pos_c = 0, fail_c = 0;                                \
+    unsigned test_c = 0, pos_c = 0, fail_c = 0, skip_test;                     \
     char *test_name, *test_desc;                                               \
-    Failure fail_data;                                                         \
+    bool do_test;                                                              \
+    Failure fail_data = (Failure){.type = TEST_PASSED};                        \
     default_terminal();                                                        \
-    do {
+  TEST_INIT_LABEL:;                                                            \
+    skip_test = test_c;                                                        \
+    if (fail_data.type == TEST_PASSED)
 
 // Don't use,  other macros will call this.
 #define END_TEST                                                               \
-  }                                                                            \
-  while (false)                                                                \
-    ;                                                                          \
-                                                                               \
-  if (test_c != 0) {                                                           \
-    if (fail_data.type = TEST_PASSED) {                                        \
-      green_terminal();                                                        \
-      printf("test %u pass.\n", test_c);                                       \
-    } else {                                                                   \
-      fail_c++;                                                                \
-      red_terminal();                                                          \
-      printf("test %u failed.\n", test_c);                                     \
-    }                                                                          \
+  if (test_c != 0 && fail_data.type == TEST_PASSED) {                          \
+    green_terminal();                                                          \
+    printf("test %u pass.\n", test_c);                                         \
   }
 
 #define END_TESTING                                                            \
@@ -199,13 +203,20 @@ typedef struct {
 
 #define TEST(name, description)                                                \
   END_TEST;                                                                    \
-  default_terminal();                                                          \
-  if (pre_fun)                                                                 \
-    pre_fun();                                                                 \
+  do_test = true;                                                              \
                                                                                \
-  test_name = #name;                                                           \
-  test_desc = #description;                                                    \
+  if (skip_test > 0) {                                                         \
+    do_test = false;                                                           \
+    skip_test--;                                                               \
+  } else {                                                                     \
+    default_terminal();                                                        \
+    if (pre_fun)                                                               \
+      pre_fun();                                                               \
                                                                                \
-  test_c++;                                                                    \
-  fail_data.type = TEST_PASSED;                                                \
-  do {
+    test_name = #name;                                                         \
+    test_desc = #description;                                                  \
+                                                                               \
+    test_c++;                                                                  \
+    fail_data.type = TEST_PASSED;                                              \
+  }                                                                            \
+  if (do_test)
