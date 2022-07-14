@@ -9,7 +9,11 @@
 
 #include "MCT.h"
 
-START_TESTING(NULL)
+void cleanup() {
+    printf("cleanup\n");
+}
+
+START_TESTING(cleanup)
 
 TEST(test1, test1) {
   int a = 1;

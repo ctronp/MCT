@@ -161,7 +161,7 @@ typedef struct {
 
 #define START_TESTING(pre_function)                                            \
   int main(int ARGC, char **ARGV) {                                            \
-    const void (*pre_fun)() = pre_function;                                    \
+    void (*pre_fun)() = pre_function;                                          \
     unsigned test_c = 0, fail_c = 0, skip_test;                                \
     char *test_name, *test_desc;                                               \
     bool do_test;                                                              \
