@@ -80,6 +80,18 @@ typedef struct {
     goto TEST_INIT_LABEL;                                                      \
   }
 
+#define ASSERT_NEQ_INT(x, y)                                                   \
+  if ((x) == (y)) {                                                            \
+    fail_data = (Failure){.type = SIGNED,                                      \
+                          .format = "Error: %lld != %lld",                     \
+                          .data1.ll = (x),                                     \
+                          .data2.ll = (y),                                     \
+                          .file = __FILE__,                                    \
+                          .line = __LINE__};                                   \
+    fail_c++;                                                                  \
+    goto TEST_INIT_LABEL;                                                      \
+  }
+
 #define ASSERT_LT_INT(x, y)                                                    \
   if ((x) >= (y)) {                                                            \
     fail_data = (Failure){.type = SIGNED,                                      \
@@ -140,6 +152,18 @@ typedef struct {
     goto TEST_INIT_LABEL;                                                      \
   }
 
+#define ASSERT_NE_UNS(x, y)                                                    \
+  if ((x) == (y)) {                                                            \
+    fail_data = (Failure){.type = UNSIGNED,                                    \
+                          .format = "Error: %llu != %llu",                     \
+                          .data1.llu = (x),                                    \
+                          .data2.llu = (y),                                    \
+                          .file = __FILE__,                                    \
+                          .line = __LINE__};                                   \
+    fail_c++;                                                                  \
+    goto TEST_INIT_LABEL;                                                      \
+  }
+
 #define ASSERT_LT_UNS(x, y)                                                    \
   if ((x) >= (y)) {                                                            \
     fail_data = (Failure){.type = UNSIGNED,                                    \
@@ -188,10 +212,22 @@ typedef struct {
     goto TEST_INIT_LABEL;                                                      \
   }
 
-#define ASSERT_STR_EQ(x, y)                                                    \
+#define ASSERT_EQ_STR(x, y)                                                    \
   if (strcmp((x), (y)) != 0) {                                                 \
     fail_data = (Failure){.type = STR,                                         \
                           .format = "Error: %s == %s",                         \
+                          .data1.str = (x),                                    \
+                          .data2.str = (y),                                    \
+                          .file = __FILE__,                                    \
+                          .line = __LINE__};                                   \
+    fail_c++;                                                                  \
+    goto TEST_INIT_LABEL;                                                      \
+  }
+
+#define ASSERT_NE_STR(x, y)                                                    \
+  if (strcmp((x), (y)) == 0) {                                                 \
+    fail_data = (Failure){.type = STR,                                         \
+                          .format = "Error: %s != %s",                         \
                           .data1.str = (x),                                    \
                           .data2.str = (y),                                    \
                           .file = __FILE__,                                    \
