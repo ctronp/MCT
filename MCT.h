@@ -31,7 +31,7 @@ static inline void red_terminal() { printf("\033[0;31m"); }
 
 static inline void green_terminal() { printf("\033[0;32m"); }
 
-static inline void default_terminal() { printf("\033[0;34m"); }
+static inline void default_terminal() { printf("\033[0;39m"); }
 
 #endif
 
@@ -53,111 +53,174 @@ typedef union {
 
 typedef struct {
   FAIL_TYPE type;
+  char *format;
   FAIL_DATA data1;
   FAIL_DATA data2;
-  unsigned long long line;
+  char *file;
+  long long unsigned line;
 } Failure;
 
 #define ASSERT(x)                                                              \
   if (!(x)) {                                                                  \
-    fail_data = (Failure){.type = UNKNOWN, .line = __LINE__};                  \
+    fail_data =                                                                \
+        (Failure){.type = UNKNOWN, .file = __FILE__, .line = __LINE__};        \
     fail_c++;                                                                  \
     goto TEST_INIT_LABEL;                                                      \
   }
 
 #define ASSERT_EQ_INT(x, y)                                                    \
   if ((x) != (y)) {                                                            \
-    fail_data = {                                                              \
-        .type = SIGNED, .data1.ll = (x), .data2.ll = (y), .line = __LINE__};   \
+    fail_data = (Failure){.type = SIGNED,                                      \
+                          .format = "Error: %lld == %lld",                     \
+                          .data1.ll = (x),                                     \
+                          .data2.ll = (y),                                     \
+                          .file = __FILE__,                                    \
+                          .line = __LINE__};                                   \
     fail_c++;                                                                  \
     goto TEST_INIT_LABEL;                                                      \
   }
 
 #define ASSERT_LT_INT(x, y)                                                    \
   if ((x) >= (y)) {                                                            \
-    fail_data = {                                                              \
-        .type = SIGNED, .data1.ll = (x), .data2.ll = (y), .line = __LINE__};   \
+    fail_data = (Failure){.type = SIGNED,                                      \
+                          .format = "Error: %lld < %lld",                      \
+                          .data1.ll = (x),                                     \
+                          .data2.ll = (y),                                     \
+                          .file = __FILE__,                                    \
+                          .line = __LINE__};                                   \
     fail_c++;                                                                  \
     goto TEST_INIT_LABEL;                                                      \
   }
 
 #define ASSERT_LE_INT(x, y)                                                    \
   if ((x) > (y)) {                                                             \
-    fail_data = {                                                              \
-        .type = SIGNED, .data1.ll = (x), .data2.ll = (y), .line = __LINE__};   \
+    fail_data = (Failure){.type = SIGNED,                                      \
+                          .format = "Error: %lld <= %lld",                     \
+                          .data1.ll = (x),                                     \
+                          .data2.ll = (y),                                     \
+                          .file = __FILE__,                                    \
+                          .line = __LINE__};                                   \
     fail_c++;                                                                  \
     goto TEST_INIT_LABEL;                                                      \
   }
 
 #define ASSERT_GT_INT(x, y)                                                    \
   if ((x) <= (y)) {                                                            \
-    fail_data = {                                                              \
-        .type = SIGNED, .data1.ll = (x), .data2.ll = (y), .line = __LINE__};   \
+    fail_data = (Failure){.type = SIGNED,                                      \
+                          .format = "Error: %lld > %lld",                      \
+                          .data1.ll = (x),                                     \
+                          .data2.ll = (y),                                     \
+                          .file = __FILE__,                                    \
+                          .line = __LINE__};                                   \
     fail_c++;                                                                  \
     goto TEST_INIT_LABEL;                                                      \
   }
 
 #define ASSERT_GE_INT(x, y)                                                    \
   if ((x) < (y)) {                                                             \
-    fail_data = {                                                              \
-        .type = SIGNED, .data1.ll = (x), .data2.ll = (y), .line = __LINE__};   \
+    fail_data = (Failure){.type = SIGNED,                                      \
+                          .format = "Error: %lld >= %lld",                     \
+                          .data1.ll = (x),                                     \
+                          .data2.ll = (y),                                     \
+                          .file = __FILE__,                                    \
+                          .line = __LINE__};                                   \
     fail_c++;                                                                  \
     goto TEST_INIT_LABEL;                                                      \
   }
 
 #define ASSERT_EQ_UNS(x, y)                                                    \
   if ((x) != (y)) {                                                            \
-    fail_data = {.type = UNSIGNED,                                             \
-                 .data1.llu = (x),                                             \
-                 .data2.llu = (y),                                             \
-                 .line = __LINE__};                                            \
+    fail_data = (Failure){.type = UNSIGNED,                                    \
+                          .format = "Error: %llu == %llu",                     \
+                          .data1.llu = (x),                                    \
+                          .data2.llu = (y),                                    \
+                          .file = __FILE__,                                    \
+                          .line = __LINE__};                                   \
     fail_c++;                                                                  \
     goto TEST_INIT_LABEL;                                                      \
   }
 
 #define ASSERT_LT_UNS(x, y)                                                    \
   if ((x) >= (y)) {                                                            \
-    fail_data = {.type = UNSIGNED,                                             \
-                 .data1.llu = (x),                                             \
-                 .data2.llu = (y),                                             \
-                 .line = __LINE__};                                            \
+    fail_data = (Failure){.type = UNSIGNED,                                    \
+                          .format = "Error: %llu < %llu",                      \
+                          .data1.llu = (x),                                    \
+                          .data2.llu = (y),                                    \
+                          .file = __FILE__,                                    \
+                          .line = __LINE__};                                   \
     fail_c++;                                                                  \
     goto TEST_INIT_LABEL;                                                      \
   }
 
 #define ASSERT_LE_UNS(x, y)                                                    \
   if ((x) > (y)) {                                                             \
-    fail_data = {.type = UNSIGNED,                                             \
-                 .data1.llu = (x),                                             \
-                 .data2.llu = (y),                                             \
-                 .line = __LINE__};                                            \
+    fail_data = (Failure){.type = UNSIGNED,                                    \
+                          .format = "Error: %llu <= %llu",                     \
+                          .data1.llu = (x),                                    \
+                          .data2.llu = (y),                                    \
+                          .file = __FILE__,                                    \
+                          .line = __LINE__};                                   \
     fail_c++;                                                                  \
     goto TEST_INIT_LABEL;                                                      \
   }
 
 #define ASSERT_GT_UNS(x, y)                                                    \
   if ((x) <= (y)) {                                                            \
-    fail_data = {.type = UNSIGNED,                                             \
-                 .data1.llu = (x),                                             \
-                 .data2.llu = (y),                                             \
-                 .line = __LINE__};                                            \
+    fail_data = (Failure){.type = UNSIGNED,                                    \
+                          .format = "Error: %llu > %llu",                      \
+                          .data1.llu = (x),                                    \
+                          .data2.llu = (y),                                    \
+                          .file = __FILE__,                                    \
+                          .line = __LINE__};                                   \
     fail_c++;                                                                  \
     goto TEST_INIT_LABEL;                                                      \
   }
 
 #define ASSERT_GE_UNS(x, y)                                                    \
   if ((x) < (y)) {                                                             \
-    fail_data = {.type = UNSIGNED,                                             \
-                 .data1.llu = (x),                                             \
-                 .data2.llu = (y),                                             \
-                 .line = __LINE__};                                            \
+    fail_data = (Failure){.type = UNSIGNED,                                    \
+                          .format = "Error: %llu >= %llu",                     \
+                          .data1.llu = (x),                                    \
+                          .data2.llu = (y),                                    \
+                          .file = __FILE__,                                    \
+                          .line = __LINE__};                                   \
+    fail_c++;                                                                  \
+    goto TEST_INIT_LABEL;                                                      \
+  }
+
+#define ASSERT_STR_EQ(x, y)                                                    \
+  if (strcmp((x), (y)) != 0) {                                                 \
+    fail_data = (Failure){.type = STR,                                         \
+                          .format = "Error: %s == %s",                         \
+                          .data1.str = (x),                                    \
+                          .data2.str = (y),                                    \
+                          .file = __FILE__,                                    \
+                          .line = __LINE__};                                   \
     fail_c++;                                                                  \
     goto TEST_INIT_LABEL;                                                      \
   }
 
 #define PRINT_FAIL                                                             \
   red_terminal();                                                              \
-  printf("test %u failed.\n", test_c);
+  printf("test failed in line %llu on file %s\n\t", fail_data.line,            \
+         fail_data.file);                                                      \
+  switch (fail_data.type) {                                                    \
+  case SIGNED:                                                                 \
+    printf(fail_data.format, fail_data.data1.ll, fail_data.data2.ll);          \
+    break;                                                                     \
+  case UNSIGNED:                                                               \
+    printf(fail_data.format, fail_data.data1.llu, fail_data.data2.llu);        \
+    break;                                                                     \
+  case STR:                                                                    \
+    printf(fail_data.format, fail_data.data1.str, fail_data.data2.str);        \
+    break;                                                                     \
+  case UNKNOWN:                                                                \
+    break;                                                                     \
+  default:                                                                     \
+    printf("%s", fail_data.format);                                            \
+    break;                                                                     \
+  }                                                                            \
+  printf("\n\n");
 
 #define START_TESTING(pre_function)                                            \
   int main(int ARGC, char **ARGV) {                                            \
@@ -179,7 +242,7 @@ typedef struct {
 #define END_TEST                                                               \
   if (test_c != 0 && fail_data.type == TEST_PASSED) {                          \
     green_terminal();                                                          \
-    printf("test %u pass.\n", test_c);                                         \
+    printf("test %u pass.\n\n", test_c);                                       \
   }
 
 #define END_TESTING                                                            \
@@ -223,6 +286,8 @@ typedef struct {
     test_desc = #description;                                                  \
                                                                                \
     test_c++;                                                                  \
+    printf("test %u:\t\t%s\n\t\t\t%s\n", test_c, test_name, test_desc);        \
+                                                                               \
     fail_data.type = TEST_PASSED;                                              \
   }                                                                            \
   if (do_test)

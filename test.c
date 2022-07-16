@@ -9,44 +9,16 @@
 
 #include "MCT.h"
 
-void cleanup() {
-    printf("cleanup\n");
-}
+// void cleanup() { printf("cleanup\n"); }
 
-START_TESTING(cleanup)
+START_TESTING(NULL) {}
 
-TEST(test1, test1) {
-  int a = 1;
-  int b = 2;
-  int c = a + b;
-  ASSERT(c == 3);
-}
+TEST(correct test, first test is correct){ASSERT(1)}
 
-TEST(test2, descripcion del test 2) {
-  int a = 1;
-  int b = 2;
-  int c = a + b;
-  ASSERT(c != 3);
-}
+TEST(incorrect test, second test is incorrect){ASSERT(0)}
 
-TEST(a, a){ASSERT(true)}
+TEST(correct Lower Equal, third test is correct){ASSERT_LE_INT(1, 1)}
 
-TEST(a, a){ASSERT(true)}
-
-TEST(a, a){ASSERT(true)}
-
-TEST(a, a){ASSERT(true)}
-
-TEST(a, a){ASSERT(false)}
-
-TEST(a, a){ASSERT(false)}
-
-TEST(a, a){ASSERT(false)}
-
-TEST(a, a){ASSERT(false)}
-
-TEST(a, a){ASSERT(false)}
-
-TEST(a, a){ASSERT(true)}
+TEST(incorrect Lower Equal, fourth test is incorrect){ASSERT_LE_INT(2, 1)}
 
 END_TESTING
