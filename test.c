@@ -2,23 +2,23 @@
 // Created by ctronp on 7/14/22.
 //
 
-//#define GOTO_HERE() goto##__COUNTER__##__LINE__##__FILE__:;
-//#define SAVE_GOTO GOTO_HERE();
-
-#define JUMP_LAST goto SAVE_GOTO;
-
 #include "MCT.h"
 
-// void cleanup() { printf("cleanup\n"); }
+START_TESTING(NULL) { printf("starting tests\n"); }
 
-START_TESTING(NULL) {}
+TEST(test de prueba 1,
+     este test se encargara de probar que el programa funciona) {
+  int a = 1;
+  int b = 2;
+  int c = a + b;
+  ASSERT(c == 3)
+}
 
-TEST(correct test, first test is correct){ASSERT(1)}
+TEST(test random, descripcion cualquiera) {
+  unsigned a = 1;
+  unsigned b = 2;
 
-TEST(incorrect test, second test is incorrect){ASSERT(0)}
-
-TEST(correct Lower Equal, third test is correct){ASSERT_LE_INT(1, 1)}
-
-TEST(incorrect Lower Equal, fourth test is incorrect){ASSERT_LE_INT(2, 1)}
+  ASSERT_EQ_UNS(a, b)
+}
 
 END_TESTING
