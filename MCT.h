@@ -40,15 +40,16 @@ typedef enum {
   SIGNED,
   UNSIGNED,
   STR,
-  FLOAT,
   DOUBLE,
-  CUSTOM,
+  PTR,
   UNKNOWN,
 } FAIL_TYPE;
 typedef union {
   long long ll;
   long long unsigned llu;
+  double dbl;
   char *str;
+  void *ptr;
 } FAIL_DATA;
 
 typedef struct {
@@ -62,6 +63,22 @@ typedef struct {
 
 #define ASSERT(x)                                                              \
   if (!(x)) {                                                                  \
+    fail_data =                                                                \
+        (Failure){.type = UNKNOWN, .file = __FILE__, .line = __LINE__};        \
+    fail_c++;                                                                  \
+    goto TEST_INIT_LABEL;                                                      \
+  }
+
+#define ASSERT_EQ(x, y)                                                        \
+  if ((x) != (y)) {                                                            \
+    fail_data =                                                                \
+        (Failure){.type = UNKNOWN, .file = __FILE__, .line = __LINE__};        \
+    fail_c++;                                                                  \
+    goto TEST_INIT_LABEL;                                                      \
+  }
+
+#define ASSERT_NE(x, y)                                                        \
+  if ((x) == (y)) {                                                            \
     fail_data =                                                                \
         (Failure){.type = UNKNOWN, .file = __FILE__, .line = __LINE__};        \
     fail_c++;                                                                  \
@@ -236,6 +253,78 @@ typedef struct {
     goto TEST_INIT_LABEL;                                                      \
   }
 
+#define ASSERT_EQ_PTR(x, y)                                                    \
+  if ((x) != (y)) {                                                            \
+    fail_data = (Failure){.type = PTR,                                         \
+                          .format = "Error: %p == %p",                         \
+                          .data1.ptr = (x),                                    \
+                          .data2.ptr = (y),                                    \
+                          .file = __FILE__,                                    \
+                          .line = __LINE__};                                   \
+    fail_c++;                                                                  \
+    goto TEST_INIT_LABEL;                                                      \
+  }
+
+#define ASSERT_NE_PTR(x, y)                                                    \
+  if ((x) == (y)) {                                                            \
+    fail_data = (Failure){.type = PTR,                                         \
+                          .format = "Error: %p != %p",                         \
+                          .data1.ptr = (x),                                    \
+                          .data2.ptr = (y),                                    \
+                          .file = __FILE__,                                    \
+                          .line = __LINE__};                                   \
+    fail_c++;                                                                  \
+    goto TEST_INIT_LABEL;                                                      \
+  }
+
+#define ASSERT_EQ_DBL(x, y)                                                    \
+  if ((x) != (y)) {                                                            \
+    fail_data = (Failure){.type = DOUBLE,                                      \
+                          .format = "Error: %lf == %lf",                       \
+                          .data1.dbl = (x),                                    \
+                          .data2.dbl = (y),                                    \
+                          .file = __FILE__,                                    \
+                          .line = __LINE__};                                   \
+    fail_c++;                                                                  \
+    goto TEST_INIT_LABEL;                                                      \
+  }
+
+#define ASSERT_NE_DBL(x, y)                                                    \
+  if ((x) == (y)) {                                                            \
+    fail_data = (Failure){.type = DOUBLE,                                      \
+                          .format = "Error: %lf != %lf",                       \
+                          .data1.dbl = (x),                                    \
+                          .data2.dbl = (y),                                    \
+                          .file = __FILE__,                                    \
+                          .line = __LINE__};                                   \
+    fail_c++;                                                                  \
+    goto TEST_INIT_LABEL;                                                      \
+  }
+
+#define ASSERT_EQ_ABS_DBL(x, y, eps)                                           \
+  if (fabs((x) - (y)) > (eps)) {                                               \
+    fail_data = (Failure){.type = DOUBLE,                                      \
+                          .format = "Error: %lf == %lf",                       \
+                          .data1.dbl = (x),                                    \
+                          .data2.dbl = (y),                                    \
+                          .file = __FILE__,                                    \
+                          .line = __LINE__};                                   \
+    fail_c++;                                                                  \
+    goto TEST_INIT_LABEL;                                                      \
+  }
+
+#define ASSERT_NE_ABS_DBL(x, y, eps)                                           \
+  if (fabs((x) - (y)) <= (eps)) {                                              \
+    fail_data = (Failure){.type = DOUBLE,                                      \
+                          .format = "Error: %lf != %lf",                       \
+                          .data1.dbl = (x),                                    \
+                          .data2.dbl = (y),                                    \
+                          .file = __FILE__,                                    \
+                          .line = __LINE__};                                   \
+    fail_c++;                                                                  \
+    goto TEST_INIT_LABEL;                                                      \
+  }
+
 #define PRINT_FAIL                                                             \
   red_terminal();                                                              \
   printf("test failed in line %llu on file %s\n\t", fail_data.line,            \
@@ -250,9 +339,15 @@ typedef struct {
   case STR:                                                                    \
     printf(fail_data.format, fail_data.data1.str, fail_data.data2.str);        \
     break;                                                                     \
-  case UNKNOWN:                                                                \
+  case DOUBLE:                                                                 \
+    printf(fail_data.format, fail_data.data1.dbl, fail_data.data2.dbl);        \
     break;                                                                     \
+  case PTR:                                                                    \
+    printf(fail_data.format, fail_data.data1.ptr, fail_data.data2.ptr);        \
+    break;                                                                     \
+  case UNKNOWN:                                                                \
   default:                                                                     \
+    break;                                                                     \
     printf("%s", fail_data.format);                                            \
     break;                                                                     \
   }                                                                            \
