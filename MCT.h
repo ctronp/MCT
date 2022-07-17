@@ -410,8 +410,8 @@ typedef struct {
     if (pre_fun)                                                               \
       pre_fun();                                                               \
                                                                                \
-    test_name = #name;                                                         \
-    test_desc = #description;                                                  \
+    test_name = name;                                                          \
+    test_desc = description;                                                   \
                                                                                \
     test_c++;                                                                  \
     printf("test %u:\t\t%s\n\t\t\t%s\n", test_c, test_name, test_desc);        \
