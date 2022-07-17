@@ -7,7 +7,7 @@ method.
 
 ## Usage
 
-just copy the MCT.h file to the project in which you want to use it.
+just copy the [MCT.h](/MCT.h) file to the project in which you want to use it.
 
 ## Example
 
