@@ -1,7 +1,4 @@
-#define IS_SIG(x) (((x)*0 - 1) < (x * 0))
-#define INT_PRINT(x) printf(#x ": %llu\n", (long long unsigned)(x))
-#define UNS_PRINT(x) printf(#x ": %lld\n", (long long)(x))
-#define DEBUG_P(x) IS_SIG(x) ? INT_PRINT(x) : UNS_PRINT(x)
+#pragma once
 
 #include <stdbool.h>
 #include <stdio.h>
