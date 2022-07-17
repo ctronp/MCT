@@ -1,7 +1,4 @@
-#define IS_SIG(x) (((x)*0 - 1) < (x * 0))
-#define INT_PRINT(x) printf(#x ": %llu\n", (long long unsigned)(x))
-#define UNS_PRINT(x) printf(#x ": %lld\n", (long long)(x))
-#define DEBUG_P(x) IS_SIG(x) ? INT_PRINT(x) : UNS_PRINT(x)
+#pragma once
 
 #include <stdbool.h>
 #include <stdio.h>
@@ -413,8 +410,8 @@ typedef struct {
     if (pre_fun)                                                               \
       pre_fun();                                                               \
                                                                                \
-    test_name = #name;                                                         \
-    test_desc = #description;                                                  \
+    test_name = name;                                                          \
+    test_desc = description;                                                   \
                                                                                \
     test_c++;                                                                  \
     printf("test %u:\t\t%s\n\t\t\t%s\n", test_c, test_name, test_desc);        \

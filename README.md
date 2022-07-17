@@ -7,7 +7,7 @@ method.
 
 ## Usage
 
-just copy the MCT.h file to the project in which you want to use it.
+just copy the [MCT.h](/MCT.h) file to the project in which you want to use it.
 
 ## Example
 
@@ -78,7 +78,7 @@ a TEST can only be placed after START_TESTING or another TEST.
 
 ### ASSERT_*
 
-Multiple ````ASSERT``` macros were created that work to validate inside a [TEST](TEST), in case they fail they will stop
+Multiple ````ASSERT``` macros were created that work to validate inside a [TEST](#TEST), in case they fail they will stop
 the execution of the test, print the error to the stdout, and continue with the next TEST in case it exists.
 
 #### Example
