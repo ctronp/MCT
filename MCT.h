@@ -1,9 +1,9 @@
 #pragma once
 
+#include <math.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
-#include <math.h>
 
 #ifdef _MSC_VER
 
@@ -39,6 +39,7 @@ typedef enum {
   SIGNED,
   UNSIGNED,
   STR,
+  FLOAT,
   DOUBLE,
   PTR,
   UNKNOWN,
@@ -46,6 +47,7 @@ typedef enum {
 typedef union {
   long long ll;
   long long unsigned llu;
+  float flt;
   double dbl;
   char *str;
   void *ptr;
@@ -276,6 +278,54 @@ typedef struct {
     goto TEST_INIT_LABEL;                                                      \
   }
 
+#define ASSERT_EQ_FLT(x, y)                                                    \
+  if ((x) != (y)) {                                                            \
+    fail_data = (Failure){.type = FLOAT,                                       \
+                          .format = "Error: %f == %f",                         \
+                          .data1.flt = (x),                                    \
+                          .data2.flt = (y),                                    \
+                          .file = __FILE__,                                    \
+                          .line = __LINE__};                                   \
+    fail_c++;                                                                  \
+    goto TEST_INIT_LABEL;                                                      \
+  }
+
+#define ASSERT_NE_FLT(x, y)                                                    \
+  if ((x) == (y)) {                                                            \
+    fail_data = (Failure){.type = FLOAT,                                       \
+                          .format = "Error: %f != %f",                         \
+                          .data1.flt = (x),                                    \
+                          .data2.flt = (y),                                    \
+                          .file = __FILE__,                                    \
+                          .line = __LINE__};                                   \
+    fail_c++;                                                                  \
+    goto TEST_INIT_LABEL;                                                      \
+  }
+
+#define ASSERT_EQ_ABS_FLT(x, y, eps)                                           \
+  if (fabs((x) - (y)) > (eps)) {                                               \
+    fail_data = (Failure){.type = FLOAT,                                       \
+                          .format = "Error: %f == %f",                         \
+                          .data1.flt = (x),                                    \
+                          .data2.flt = (y),                                    \
+                          .file = __FILE__,                                    \
+                          .line = __LINE__};                                   \
+    fail_c++;                                                                  \
+    goto TEST_INIT_LABEL;                                                      \
+  }
+
+#define ASSERT_NE_ABS_FLT(x, y, eps)                                           \
+  if (fabs((x) - (y)) <= (eps)) {                                              \
+    fail_data = (Failure){.type = FLOAT,                                       \
+                          .format = "Error: %f != %f",                         \
+                          .data1.flt = (x),                                    \
+                          .data2.flt = (y),                                    \
+                          .file = __FILE__,                                    \
+                          .line = __LINE__};                                   \
+    fail_c++;                                                                  \
+    goto TEST_INIT_LABEL;                                                      \
+  }
+
 #define ASSERT_EQ_DBL(x, y)                                                    \
   if ((x) != (y)) {                                                            \
     fail_data = (Failure){.type = DOUBLE,                                      \
@@ -326,7 +376,7 @@ typedef struct {
 
 #define PRINT_FAIL                                                             \
   red_terminal();                                                              \
-  printf("test failed in line %llu on file %s\n\t", fail_data.line,            \
+  printf("\t\ttest failed in line %llu on file %s\n\t\t", fail_data.line,            \
          fail_data.file);                                                      \
   switch (fail_data.type) {                                                    \
   case SIGNED:                                                                 \
@@ -337,6 +387,9 @@ typedef struct {
     break;                                                                     \
   case STR:                                                                    \
     printf(fail_data.format, fail_data.data1.str, fail_data.data2.str);        \
+    break;                                                                     \
+  case FLOAT:                                                                  \
+    printf(fail_data.format, fail_data.data1.flt, fail_data.data2.flt);        \
     break;                                                                     \
   case DOUBLE:                                                                 \
     printf(fail_data.format, fail_data.data1.dbl, fail_data.data2.dbl);        \
@@ -416,7 +469,7 @@ typedef struct {
     test_desc = description;                                                   \
                                                                                \
     test_c++;                                                                  \
-    printf("test %u:\t\t%s\n\t\t\t%s\n", test_c, test_name, test_desc);        \
+    printf("test %u:\t%s\n\t\t%s\n", test_c, test_name, test_desc);        \
                                                                                \
     fail_data.type = TEST_PASSED;                                              \
   }                                                                            \
