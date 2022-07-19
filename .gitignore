@@ -9,4 +9,5 @@
 !LICENSE
 !MCT.h
 !README.md
-!test.c
+!pass_test.c
+!fail_test.c

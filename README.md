@@ -47,7 +47,7 @@ END_TESTING
 ```
 
 a longer example can be found [here](https://github.com/ctronp/EfficientDataStructures/tree/dev/tests)
-or [here](/test.c)
+or [here](/pass_test.c)
 
 ## Macros
 
