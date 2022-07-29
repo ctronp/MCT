@@ -10,17 +10,17 @@
 #include <windows.h>
 
 static inline void red_terminal() {
-  hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+  HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
   SetConsoleTextAttribute(hConsole, FOREGROUND_RED);
 }
 
 static inline void green_terminal() {
-  hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+  HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
   SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN);
 }
 
 static inline void default_terminal() {
-  hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+  HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
   SetConsoleTextAttribute(hConsole, 3);
 }
 
@@ -376,7 +376,7 @@ typedef struct {
 
 #define PRINT_FAIL                                                             \
   red_terminal();                                                              \
-  printf("\t\ttest failed in line %llu on file %s\n\t\t", fail_data.line,            \
+  printf("\t\ttest failed in line %llu on file %s\n\t\t", fail_data.line,      \
          fail_data.file);                                                      \
   switch (fail_data.type) {                                                    \
   case SIGNED:                                                                 \
@@ -469,7 +469,7 @@ typedef struct {
     test_desc = description;                                                   \
                                                                                \
     test_c++;                                                                  \
-    printf("test %u:\t%s\n\t\t%s\n", test_c, test_name, test_desc);        \
+    printf("test %u:\t%s\n\t\t%s\n", test_c, test_name, test_desc);            \
                                                                                \
     fail_data.type = TEST_PASSED;                                              \
   }                                                                            \
