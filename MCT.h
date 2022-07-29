@@ -36,13 +36,13 @@ static inline void default_terminal() { printf("\033[0;39m"); }
 
 typedef enum {
   TEST_PASSED,
-  SIGNED,
-  UNSIGNED,
-  STR,
-  FLOAT,
-  DOUBLE,
-  PTR,
-  UNKNOWN,
+  ESIGNED,
+  EUNSIGNED,
+  ESTR,
+  EFLOAT,
+  EDOUBLE,
+  EPTR,
+  EUNKNOWN,
 } FAIL_TYPE;
 typedef union {
   long long ll;
@@ -65,7 +65,7 @@ typedef struct {
 #define ASSERT(x)                                                              \
   if (!(x)) {                                                                  \
     fail_data =                                                                \
-        (Failure){.type = UNKNOWN, .file = __FILE__, .line = __LINE__};        \
+        (Failure){.type = EUNKNOWN, .file = __FILE__, .line = __LINE__};       \
     fail_c++;                                                                  \
     goto TEST_INIT_LABEL;                                                      \
   }
@@ -73,7 +73,7 @@ typedef struct {
 #define ASSERT_EQ(x, y)                                                        \
   if ((x) != (y)) {                                                            \
     fail_data =                                                                \
-        (Failure){.type = UNKNOWN, .file = __FILE__, .line = __LINE__};        \
+        (Failure){.type = EUNKNOWN, .file = __FILE__, .line = __LINE__};       \
     fail_c++;                                                                  \
     goto TEST_INIT_LABEL;                                                      \
   }
@@ -81,14 +81,14 @@ typedef struct {
 #define ASSERT_NE(x, y)                                                        \
   if ((x) == (y)) {                                                            \
     fail_data =                                                                \
-        (Failure){.type = UNKNOWN, .file = __FILE__, .line = __LINE__};        \
+        (Failure){.type = EUNKNOWN, .file = __FILE__, .line = __LINE__};       \
     fail_c++;                                                                  \
     goto TEST_INIT_LABEL;                                                      \
   }
 
 #define ASSERT_EQ_INT(x, y)                                                    \
   if ((x) != (y)) {                                                            \
-    fail_data = (Failure){.type = SIGNED,                                      \
+    fail_data = (Failure){.type = ESIGNED,                                     \
                           .format = "Error: %lld == %lld",                     \
                           .data1.ll = (x),                                     \
                           .data2.ll = (y),                                     \
@@ -100,7 +100,7 @@ typedef struct {
 
 #define ASSERT_NEQ_INT(x, y)                                                   \
   if ((x) == (y)) {                                                            \
-    fail_data = (Failure){.type = SIGNED,                                      \
+    fail_data = (Failure){.type = ESIGNED,                                     \
                           .format = "Error: %lld != %lld",                     \
                           .data1.ll = (x),                                     \
                           .data2.ll = (y),                                     \
@@ -112,7 +112,7 @@ typedef struct {
 
 #define ASSERT_LT_INT(x, y)                                                    \
   if ((x) >= (y)) {                                                            \
-    fail_data = (Failure){.type = SIGNED,                                      \
+    fail_data = (Failure){.type = ESIGNED,                                     \
                           .format = "Error: %lld < %lld",                      \
                           .data1.ll = (x),                                     \
                           .data2.ll = (y),                                     \
@@ -124,7 +124,7 @@ typedef struct {
 
 #define ASSERT_LE_INT(x, y)                                                    \
   if ((x) > (y)) {                                                             \
-    fail_data = (Failure){.type = SIGNED,                                      \
+    fail_data = (Failure){.type = ESIGNED,                                     \
                           .format = "Error: %lld <= %lld",                     \
                           .data1.ll = (x),                                     \
                           .data2.ll = (y),                                     \
@@ -136,7 +136,7 @@ typedef struct {
 
 #define ASSERT_GT_INT(x, y)                                                    \
   if ((x) <= (y)) {                                                            \
-    fail_data = (Failure){.type = SIGNED,                                      \
+    fail_data = (Failure){.type = ESIGNED,                                     \
                           .format = "Error: %lld > %lld",                      \
                           .data1.ll = (x),                                     \
                           .data2.ll = (y),                                     \
@@ -148,7 +148,7 @@ typedef struct {
 
 #define ASSERT_GE_INT(x, y)                                                    \
   if ((x) < (y)) {                                                             \
-    fail_data = (Failure){.type = SIGNED,                                      \
+    fail_data = (Failure){.type = ESIGNED,                                     \
                           .format = "Error: %lld >= %lld",                     \
                           .data1.ll = (x),                                     \
                           .data2.ll = (y),                                     \
@@ -160,7 +160,7 @@ typedef struct {
 
 #define ASSERT_EQ_UNS(x, y)                                                    \
   if ((x) != (y)) {                                                            \
-    fail_data = (Failure){.type = UNSIGNED,                                    \
+    fail_data = (Failure){.type = EUNSIGNED,                                   \
                           .format = "Error: %llu == %llu",                     \
                           .data1.llu = (x),                                    \
                           .data2.llu = (y),                                    \
@@ -172,7 +172,7 @@ typedef struct {
 
 #define ASSERT_NE_UNS(x, y)                                                    \
   if ((x) == (y)) {                                                            \
-    fail_data = (Failure){.type = UNSIGNED,                                    \
+    fail_data = (Failure){.type = EUNSIGNED,                                   \
                           .format = "Error: %llu != %llu",                     \
                           .data1.llu = (x),                                    \
                           .data2.llu = (y),                                    \
@@ -184,7 +184,7 @@ typedef struct {
 
 #define ASSERT_LT_UNS(x, y)                                                    \
   if ((x) >= (y)) {                                                            \
-    fail_data = (Failure){.type = UNSIGNED,                                    \
+    fail_data = (Failure){.type = EUNSIGNED,                                   \
                           .format = "Error: %llu < %llu",                      \
                           .data1.llu = (x),                                    \
                           .data2.llu = (y),                                    \
@@ -196,7 +196,7 @@ typedef struct {
 
 #define ASSERT_LE_UNS(x, y)                                                    \
   if ((x) > (y)) {                                                             \
-    fail_data = (Failure){.type = UNSIGNED,                                    \
+    fail_data = (Failure){.type = EUNSIGNED,                                   \
                           .format = "Error: %llu <= %llu",                     \
                           .data1.llu = (x),                                    \
                           .data2.llu = (y),                                    \
@@ -208,7 +208,7 @@ typedef struct {
 
 #define ASSERT_GT_UNS(x, y)                                                    \
   if ((x) <= (y)) {                                                            \
-    fail_data = (Failure){.type = UNSIGNED,                                    \
+    fail_data = (Failure){.type = EUNSIGNED,                                   \
                           .format = "Error: %llu > %llu",                      \
                           .data1.llu = (x),                                    \
                           .data2.llu = (y),                                    \
@@ -220,7 +220,7 @@ typedef struct {
 
 #define ASSERT_GE_UNS(x, y)                                                    \
   if ((x) < (y)) {                                                             \
-    fail_data = (Failure){.type = UNSIGNED,                                    \
+    fail_data = (Failure){.type = EUNSIGNED,                                   \
                           .format = "Error: %llu >= %llu",                     \
                           .data1.llu = (x),                                    \
                           .data2.llu = (y),                                    \
@@ -232,7 +232,7 @@ typedef struct {
 
 #define ASSERT_EQ_STR(x, y)                                                    \
   if (strcmp((x), (y)) != 0) {                                                 \
-    fail_data = (Failure){.type = STR,                                         \
+    fail_data = (Failure){.type = ESTR,                                        \
                           .format = "Error: %s == %s",                         \
                           .data1.str = (x),                                    \
                           .data2.str = (y),                                    \
@@ -244,7 +244,7 @@ typedef struct {
 
 #define ASSERT_NE_STR(x, y)                                                    \
   if (strcmp((x), (y)) == 0) {                                                 \
-    fail_data = (Failure){.type = STR,                                         \
+    fail_data = (Failure){.type = ESTR,                                        \
                           .format = "Error: %s != %s",                         \
                           .data1.str = (x),                                    \
                           .data2.str = (y),                                    \
@@ -256,7 +256,7 @@ typedef struct {
 
 #define ASSERT_EQ_PTR(x, y)                                                    \
   if ((x) != (y)) {                                                            \
-    fail_data = (Failure){.type = PTR,                                         \
+    fail_data = (Failure){.type = EPTR,                                        \
                           .format = "Error: %p == %p",                         \
                           .data1.ptr = (x),                                    \
                           .data2.ptr = (y),                                    \
@@ -268,7 +268,7 @@ typedef struct {
 
 #define ASSERT_NE_PTR(x, y)                                                    \
   if ((x) == (y)) {                                                            \
-    fail_data = (Failure){.type = PTR,                                         \
+    fail_data = (Failure){.type = EPTR,                                        \
                           .format = "Error: %p != %p",                         \
                           .data1.ptr = (x),                                    \
                           .data2.ptr = (y),                                    \
@@ -280,7 +280,7 @@ typedef struct {
 
 #define ASSERT_EQ_FLT(x, y)                                                    \
   if ((x) != (y)) {                                                            \
-    fail_data = (Failure){.type = FLOAT,                                       \
+    fail_data = (Failure){.type = EFLOAT,                                      \
                           .format = "Error: %f == %f",                         \
                           .data1.flt = (x),                                    \
                           .data2.flt = (y),                                    \
@@ -292,7 +292,7 @@ typedef struct {
 
 #define ASSERT_NE_FLT(x, y)                                                    \
   if ((x) == (y)) {                                                            \
-    fail_data = (Failure){.type = FLOAT,                                       \
+    fail_data = (Failure){.type = EFLOAT,                                      \
                           .format = "Error: %f != %f",                         \
                           .data1.flt = (x),                                    \
                           .data2.flt = (y),                                    \
@@ -304,7 +304,7 @@ typedef struct {
 
 #define ASSERT_EQ_ABS_FLT(x, y, eps)                                           \
   if (fabs((x) - (y)) > (eps)) {                                               \
-    fail_data = (Failure){.type = FLOAT,                                       \
+    fail_data = (Failure){.type = EFLOAT,                                      \
                           .format = "Error: %f == %f",                         \
                           .data1.flt = (x),                                    \
                           .data2.flt = (y),                                    \
@@ -316,7 +316,7 @@ typedef struct {
 
 #define ASSERT_NE_ABS_FLT(x, y, eps)                                           \
   if (fabs((x) - (y)) <= (eps)) {                                              \
-    fail_data = (Failure){.type = FLOAT,                                       \
+    fail_data = (Failure){.type = EFLOAT,                                      \
                           .format = "Error: %f != %f",                         \
                           .data1.flt = (x),                                    \
                           .data2.flt = (y),                                    \
@@ -328,7 +328,7 @@ typedef struct {
 
 #define ASSERT_EQ_DBL(x, y)                                                    \
   if ((x) != (y)) {                                                            \
-    fail_data = (Failure){.type = DOUBLE,                                      \
+    fail_data = (Failure){.type = EDOUBLE,                                     \
                           .format = "Error: %lf == %lf",                       \
                           .data1.dbl = (x),                                    \
                           .data2.dbl = (y),                                    \
@@ -340,7 +340,7 @@ typedef struct {
 
 #define ASSERT_NE_DBL(x, y)                                                    \
   if ((x) == (y)) {                                                            \
-    fail_data = (Failure){.type = DOUBLE,                                      \
+    fail_data = (Failure){.type = EDOUBLE,                                     \
                           .format = "Error: %lf != %lf",                       \
                           .data1.dbl = (x),                                    \
                           .data2.dbl = (y),                                    \
@@ -352,7 +352,7 @@ typedef struct {
 
 #define ASSERT_EQ_ABS_DBL(x, y, eps)                                           \
   if (fabs((x) - (y)) > (eps)) {                                               \
-    fail_data = (Failure){.type = DOUBLE,                                      \
+    fail_data = (Failure){.type = EDOUBLE,                                     \
                           .format = "Error: %lf == %lf",                       \
                           .data1.dbl = (x),                                    \
                           .data2.dbl = (y),                                    \
@@ -364,7 +364,7 @@ typedef struct {
 
 #define ASSERT_NE_ABS_DBL(x, y, eps)                                           \
   if (fabs((x) - (y)) <= (eps)) {                                              \
-    fail_data = (Failure){.type = DOUBLE,                                      \
+    fail_data = (Failure){.type = EDOUBLE,                                     \
                           .format = "Error: %lf != %lf",                       \
                           .data1.dbl = (x),                                    \
                           .data2.dbl = (y),                                    \
@@ -379,25 +379,25 @@ typedef struct {
   printf("\t\ttest failed in line %llu on file %s\n\t\t", fail_data.line,      \
          fail_data.file);                                                      \
   switch (fail_data.type) {                                                    \
-  case SIGNED:                                                                 \
+  case ESIGNED:                                                                \
     printf(fail_data.format, fail_data.data1.ll, fail_data.data2.ll);          \
     break;                                                                     \
-  case UNSIGNED:                                                               \
+  case EUNSIGNED:                                                              \
     printf(fail_data.format, fail_data.data1.llu, fail_data.data2.llu);        \
     break;                                                                     \
-  case STR:                                                                    \
+  case ESTR:                                                                   \
     printf(fail_data.format, fail_data.data1.str, fail_data.data2.str);        \
     break;                                                                     \
-  case FLOAT:                                                                  \
+  case EFLOAT:                                                                 \
     printf(fail_data.format, fail_data.data1.flt, fail_data.data2.flt);        \
     break;                                                                     \
-  case DOUBLE:                                                                 \
+  case EDOUBLE:                                                                \
     printf(fail_data.format, fail_data.data1.dbl, fail_data.data2.dbl);        \
     break;                                                                     \
-  case PTR:                                                                    \
+  case EPTR:                                                                   \
     printf(fail_data.format, fail_data.data1.ptr, fail_data.data2.ptr);        \
     break;                                                                     \
-  case UNKNOWN:                                                                \
+  case EUNKNOWN:                                                               \
   default:                                                                     \
     break;                                                                     \
     printf("%s", fail_data.format);                                            \
