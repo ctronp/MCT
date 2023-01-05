@@ -19,9 +19,9 @@ START_TESTING(NULL){
     printf("Only run on first execution.");
 }
 
-// Code that is not between the START_TESTING
-// or TEST will be evaluated countless times,
-// no code must be outside the curly brackets.
+// The code between START_TESTING and TEST
+// will be evaluated countless times, no
+// code should be outside the braces.
 
 TEST(test name, test description){
 // Code for the first test
@@ -78,7 +78,7 @@ a TEST can only be placed after START_TESTING or another TEST.
 
 ### ASSERT_*
 
-Multiple ````ASSERT``` macros were created that work to validate inside a [TEST](#TEST), in case they fail they will stop
+Multiple ```ASSERT``` macros were created that work to validate inside a [TEST](#TEST), in case they fail they will stop
 the execution of the test, print the error to the stdout, and continue with the next TEST in case it exists.
 
 #### Example
